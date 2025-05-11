@@ -1,0 +1,64 @@
+run:
+  timeout: 5m
+linters:
+  enable:
+    - asciicheck
+    - dogsled
+    - durationcheck
+    - errcheck
+    - errorlint
+    - copyloopvar
+    - gofmt
+    - gosec
+    - misspell
+    - nakedret
+    - nilerr
+    - nolintlint
+    - revive
+    - testifylint
+    - wastedassign
+    - goimports
+
+linters-settings:
+  gosec:
+    # 利用できるルール: https://github.com/securego/gosec#available-rules
+    # [] を指定することで、すべてのルールを適用することになる
+    includes:
+      - G101 # 認証情報などがハードコーディングされた機密情報の検出
+      - G102 # math/rand を使用していない不適切な乱数生成の検出
+      - G103 # 危険なファイルパーミッションの設定を検出
+      - G104 # エラー処理の欠如を検出
+      - G105 # ユーザ入力を直接フォーマット指定文字列に使用している箇所を検出
+      - G106 # OSコマンドインジェクションの検出
+      - G107 # 機密情報がprintやlogで出力されているか検出
+      - G108 # 開発中に使用されたdebugやlogの不適切な使用
+      - G109 # 信頼できないデータの使用、特に信頼されていない入力に対する不十分な検証
+      # - G110 # SQLクエリ内で文字列連結を使用している箇所を検出
+      - G111 # database/sqlでSQLクエリの構築に文字列連結を使用している箇所
+      - G112 # http.Clientを使用する際に適切な設定を行っていない箇所
+      - G201 # 非暗号化の通信(HTTPなど)を使用している箇所を検出
+      # - G202 # クライアント側での不適切なSSL/TLS設定
+      - G203 # 並行処理による競合状態(レースコンディション)を検出
+      # - G301 # 弱い暗号化アルゴリズムの使用を検出(MD5,DES,etc...)
+      # - G302 # 不適切な証明書検証
+      # - G401 # 使用する暗号ライブラリの脆弱性を検出
+      # - G402 # 不適切な暗号化の実装を検証
+      # - G501 # SSL設定において、カスタムCA証明書を適切に使用していない箇所の検出
+  testifylint:
+    enable-all: true
+
+issues:
+  exclude-rules:
+    # 未使用の構造体・変数に関する警告を無視する
+    - linters:
+        - structcheck
+        - unused
+      text: "`data` is unused"
+    # テストコードではセキュリティ警告を無視する
+    - path: _test\.go
+      linters:
+        - gosec
+    # テストコードでは命名規則やコーディングスタイルの警告を無視する
+    - linters:
+        - revive
+      path: _test\.go

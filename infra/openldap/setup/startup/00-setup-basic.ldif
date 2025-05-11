@@ -1,0 +1,57 @@
+# =====================================================================
+#   ユーザを作成する前に設定する、基本的な設定
+# =====================================================================
+
+# サーバIDを設定する
+dn: cn=config
+changetype: modify
+replace: olcServerID
+# 冗長化する場合は、
+#     olcServerID: 1, olcServerID: 2
+# と、それぞれのLDAPサーバに設定すること
+olcServerID: ${LDAP_SERVER_ID}
+
+#dn: cn=config
+#changetype: modify
+#replace: olcPasswordCryptSaltFormat
+#olcPasswordCryptSaltFormat: $1$%.8s
+
+dn: olcDatabase={-1}frontend,cn=config
+changetype: modify
+replace: olcPasswordHash
+olcPasswordHash: {SSHA}
+
+# ldapsearchの検索結果を変更する
+dn: cn=config
+changetype: modify
+replace: olcSizeLimit
+olcSizeLimit: 100000
+
+# 証明書のパスを設定
+#dn: cn=config
+#changetype: modify
+#replace: olcTLSCACertificateFile
+#olcTLSCACertificateFile: /etc/openldap/certs/ca.crt
+#-
+#replace: olcTLSCertificateFile
+#olcTLSCertificateFile: /etc/openldap/certs/server.crt
+#-
+#replace: olcTLSCertificateKeyFile
+#olcTLSCertificateKeyFile: /etc/openldap/certs/server.key
+#-
+#replace: olcTLSVerifyClient
+#olcTLSVerifyClient: try
+
+# ルート識別名の設定
+#dn: olcDatabase={1}mdb,cn=config
+#changetype: modify
+#replace: oldRootDN
+#olcRootDN: cn=Manager,dc=example,dc=com
+#-
+# ルートサフィックスの設定
+#replace: olcSuffix
+#olcSuffix: dc=example,dc=com
+#-
+# パスワードを変更する
+#replace: olcRootPW
+#olcRootPW: secret...

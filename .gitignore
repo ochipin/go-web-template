@@ -1,0 +1,55 @@
+# vi, vim のテンポラリファイルを除外する
+[._]*.s[a-w][a-z]
+[._]s[a-w][a-z]
+# Emacs のテンポラリファイルを除外する
+.\#*
+# Office関連のテンポラリファイルは除外する
+~$*
+*.tmp
+# OS関連の一時ファイルは除外
+.DS_Store
+.vscode-server
+Thumbs.db
+# 以下バックアップファイルを除外する
+*~
+*.org
+*.orig
+*.bak
+*.db
+# 圧縮ファイル関係も除外する
+*.zip
+*.tar
+*.tar.gz
+# yyyymmdd形式のバックアップファイルを除外する
+*.[0-9][0-9][0-9][0-9][0-9][0-9][0-9][0-9]
+# yyyymm形式のバックアップファイルを除外する
+*.[0-9][0-9][0-9][0-9][0-9][0-9]
+# ログファイル置き場は除外する
+/log
+# ロードモジュールは除外する
+/bin
+# パッケージ管理ディレクトリは除外する
+/pkg
+/vendor
+/cache
+/.cache
+# テンポラリファイル置き場は除外する
+/tmp
+# 環境変数ファイルは除外する
+.env
+.vscode/settings.json
+/.devcontainer/override.yaml
+/.devcontainer/devcontainer.json
+/.devcontainer/container.bashrc
+*.out
+*.tsbuildinfo
+# サーバ証明書・秘密鍵などは除外する
+*.crt
+*.srl
+*.key
+*.csr
+*.pem
+# Added by cargo
+/target
+# 各インフラデータは除外する
+/infra/*/data

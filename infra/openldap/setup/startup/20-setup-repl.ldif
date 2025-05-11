@@ -1,0 +1,37 @@
+#
+# 冗長化構成設定LDIF
+#
+
+#
+# rid: 一意のIDを付与すること. サーバ毎に別のIDを設けるのが望ましい。
+#   ⇒ 例: rid=001, rid=002
+# privider: レプリケーションする相手側のURL
+#   ⇒ 例: provider=ldap://openldap2.example.com
+# binddn: レプリケーション用BindDNを記載する
+#   ⇒ 例: binddn="cn=Replication,dc=example,dc=com"
+# credentials: レプリケーション用BindDNのパスワード
+#   ⇒ 例: credentials="p@s$w0rd"
+# searchbase: レプリケーションするBaseDNを記載する
+#   ⇒ 例: searchbase="dc=example,dc=com"
+#
+
+#
+# 冗長化構成を有効にする場合は下記のコメントを外す
+#
+
+#dn: olcDatabase={1}mdb,cn=config
+#changetype: modify
+#replace: olcSyncRepl
+#olcSyncRepl: rid=001
+#  provider=ldap://openldap2.example.com
+#  bindmethod=simple
+#  binddn="cn=Replication,dc=example,dc=com"
+#  credentials="p@s$w0rd"
+#  type=refreshAndPersist
+#  interval=00:00:05:00
+#  searchbase="dc=example,dc=com"
+#  scope=sub
+#  retry="5 10 30 +"
+#-
+#replace: olcMirrorMode
+#olcMirrorMode: TRUE

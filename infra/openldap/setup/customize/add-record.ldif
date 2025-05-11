@@ -1,0 +1,70 @@
+#
+# OpenLDAPコンテナ初回起動時に追加する各種レコード群を記載する
+#   olcRootDNの値に応じて追加するレコードを変えること
+#
+
+# トップディレクトリを作成する
+dn: dc=example,dc=com
+objectClass: dcObject
+objectClass: organization
+dc: example
+o: example
+
+# ユーザ・グループ情報を格納するディレクトリをexample.com配下に作成する
+dn: dc=system,dc=example,dc=com
+objectClass: dcObject
+objectClass: organization
+dc: system
+o: system
+
+# "system"ディレクトリの管理者を作成する
+dn: cn=Manager,dc=system,dc=example,dc=com
+objectClass: person
+cn: Manager
+sn: Manager
+userPassword: {SSHA}9hrOUo3BlzNd8hW/L0+FOF7MYCaqAfHD
+
+# "system"ディレクトリにグループ情報を作成する
+dn: ou=Group,dc=system,dc=example,dc=com
+objectClass: organizationalUnit
+ou: Group
+
+# グループを追加
+dn: cn=gid001,ou=Group,dc=system,dc=example,dc=com
+gidNumber: 10000
+cn: gid001
+objectClass: posixGroup
+objectClass: top
+memberUid: uid001
+
+# "system"ディレクトリにユーザ情報を作成する
+dn: ou=People,dc=system,dc=example,dc=com
+objectClass: organizationalUnit
+ou: People
+
+# ユーザを追加
+dn: uid=uid001,ou=People,dc=system,dc=example,dc=com
+objectClass: top
+objectClass: person
+objectClass: organizationalPerson
+objectClass: posixAccount
+objectClass: shadowAccount
+objectClass: inetOrgPerson
+uidNumber: 10000
+gidNumber: 10000
+uid: uid001
+loginShell: /bin/bash
+homeDirectory: /home/uid001
+mail: sample.user@example.com
+userPassword: {SSHA}9hrOUo3BlzNd8hW/L0+FOF7MYCaqAfHD
+cn: Suguru OCHIAI
+gecos: Suguru OCHIAI
+givenName: Suguru
+givenName;lang-ja:: 5YSq
+sn: OCHIAI
+sn;lang-ja:: 6JC95ZCI
+shadowMax: 99999
+shadowWarning: 30
+shadowFlag: 0
+shadowLastChange: 18744
+shadowExpire: -1

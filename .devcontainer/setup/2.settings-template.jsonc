@@ -1,0 +1,229 @@
+// =============================================================================
+//    コンテナ上で使用するVSCodeの設定テンプレート
+// =============================================================================
+{
+    // -------------------------------------------------------------------------
+    // VSCode のUI設定
+    // -------------------------------------------------------------------------
+    // 配色テーマを変更する
+    "workbench.colorTheme": "GitHub Dark",
+    // 変更が保存されていないタブを目立たせる
+    "workbench.editor.highlightModifiedTabs": true,
+    // ウインドウのタイトルにコマンドランチャーを表示しない
+    "window.commandCenter": false,
+    // 自分が定義したビルドタスク以外は表示しない
+    "task.autoDetect": "off",
+
+    // -------------------------------------------------------------------------
+    // VSCodeに付属しているエディタの設定
+    // -------------------------------------------------------------------------
+    // ターミナルのカラーリングを変更する
+    "workbench.colorCustomizations": {
+        "editorCursor.foreground": "#C8E1FF",
+        "terminal.background": "#24292E",
+        "terminal.foreground": "#E1E4E8",
+        "terminalCursor.background": "#C8E1FF",
+        "terminalCursor.foreground": "#C8E1FF",
+        "terminal.ansiBlack": "#444556",
+        "terminal.ansiBlue": "#79B8FF",
+        "terminal.ansiBrightBlack": "#6A737D",
+        "terminal.ansiBrightBlue": "#569CD6",
+        "terminal.ansiBrightCyan": "#9CDCFE",
+        "terminal.ansiBrightGreen": "#85E89D",
+        "terminal.ansiBrightMagenta": "#DA70D6",
+        "terminal.ansiBrightRed": "#F97583",
+        "terminal.ansiBrightWhite": "#FFF",
+        "terminal.ansiBrightYellow": "#FFAB70",
+        "terminal.ansiCyan": "#66D9EF",
+        "terminal.ansiGreen": "#57A64A",
+        "terminal.ansiMagenta": "#B392F0",
+        "terminal.ansiRed": "#F92672",
+        "terminal.ansiWhite": "#E1E4E8",
+        "terminal.ansiYellow": "#FFD700"
+    },
+    // ターミナルのフォントサイズ・フォントを変更する
+    "terminal.integrated.fontSize": 14,
+    "terminal.integrated.fontFamily": "Consolas, 'BIZ UDPゴシック'",
+    // ターミナルの文字間隔を1ピクセル開ける
+    "terminal.integrated.letterSpacing": 1,
+    // ターミナルの太字を標準として表示する
+    "terminal.integrated.fontWeight": "normal",
+    "terminal.integrated.fontWeightBold": "normal",
+    // ターミナルのカーソルは縦線表示・点滅とし、幅は2ピクセルとする
+    "terminal.integrated.cursorStyle": "line",
+    "terminal.integrated.cursorBlinking": true,
+    "terminal.integrated.cursorWidth": 2,
+    // 主にシェル拡張機能は使わないものとする
+    "terminal.integrated.shellIntegration.enabled": false,
+    "terminal.integrated.enableVisualBell": false,
+    // ベルを無効にする
+    "accessibility.signals.terminalBell": {
+        "sound": "off"
+    },
+
+    // -------------------------------------------------------------------------
+    // Git設定
+    // -------------------------------------------------------------------------
+    "git.autofetch": true,
+    // 親リポジトリを探さない
+    "git.openRepositoryInParentFolders": "never",
+
+    // -------------------------------------------------------------------------
+    // ファイル設定
+    // -------------------------------------------------------------------------
+    // 改行コードをLFにする
+    "files.eol": "\n",
+    // ファイル保存時に、最終行に1行追加する
+    "files.insertFinalNewline": true,
+    // ファイル保存時に、最終行以降の新しい行をトリミングする
+    "files.trimFinalNewlines": true,
+    // ファイル保存時に、末尾の空白をトリミングする
+    "files.trimTrailingWhitespace": true,
+    // ファイル拡張子の関連付け
+    "files.associations": {
+        "env.*": "properties",
+        "*.cnf": "properties",
+        "settings.dev.json": "jsonl"
+    },
+
+    // -------------------------------------------------------------------------
+    // エディタ全般の設定
+    // -------------------------------------------------------------------------
+    // エディタのフォントサイズ
+    "editor.fontSize": 14,
+    // エディタのフォント
+    "editor.fontFamily": "Consolas, 'BIZ UDPゴシック', monaco, monospace",
+    // 自動挿入された末尾の空白を削除しない
+    "editor.trimAutoWhitespace": false,
+    // GitHub Theme [GitHub Dark] のコメントの色を変更する
+    "editor.tokenColorCustomizations": {
+        "[GitHub Dark]": {
+            "comments": "#6A9955"
+        }
+    },
+    // 常に最初の候補を選択する
+    "editor.suggestSelection": "first",
+    // 基本的に、フォーマットはかけない
+    "editor.formatOnSave": false,
+
+    // -------------------------------------------------------------------------
+    // Goエディタの設定
+    // -------------------------------------------------------------------------
+    // Go言語のみフォーマットはかけるようにする
+    "[go]": {
+        "editor.formatOnSave": true,
+        // "import" の整理は、golangci-lintを使用するので、保存時に整理しないようにする
+        "editor.codeActionsOnSave": {
+            "source.organizeImports": "explicit"
+        }
+    },
+    "go.lintTool": "golangci-lint",
+    "go.lintFlags": ["run", "--fix"],
+    "go.lintOnSave": "package",
+    // Go言語で、テンプレートを利用する際に、拡張子がtext,htmlの場合のみシンタックスを有効にする
+    "go-template.patterns": ["**/*.{text,html}"],
+    // Goの拡張ツールは自動アップグレードする
+    "go.toolsManagement.autoUpdate": true,
+
+    // -------------------------------------------------------------------------
+    // Rustエディタの設定
+    // -------------------------------------------------------------------------
+    "[rust]": {
+        "editor.defaultFormatter": "rust-lang.rust-analyzer",
+        "editor.formatOnSave": true,
+        "editor.inlayHints.enabled": "off"
+    },
+    "rust-analyzer.cargo.autoreload": true,
+    "rust-analyzer.checkOnSave": true,
+    "rust-analyzer.procMacro.enable": true,
+
+    // -------------------------------------------------------------------------
+    // Markdownエディタの設定
+    // -------------------------------------------------------------------------
+    "[markdown]": {
+        // Markdownの場合は、ASCII文字や、空白文字の強調表示は不要
+        "editor.unicodeHighlight.ambiguousCharacters": false,
+        "editor.unicodeHighlight.invisibleCharacters": false,
+        // 文字を折り返す
+        "editor.wordWrap": "on",
+        // 入力候補は全部不要
+        "editor.quickSuggestions": {
+            "other": "on",
+            "comments": "off",
+            "strings": "off"
+        },
+        // Markdown の場合は、末尾空白が必要な場合もあるのでOFFにする
+        "files.trimTrailingWhitespace": false
+    },
+
+    // -------------------------------------------------------------------------
+    // Todo Tree の設定
+    // -------------------------------------------------------------------------
+    // コメントに記載されている BUG, TODO, NOTE コメントのカラーリングを行う
+    "todo-tree.general.tags":[
+        "BUG:",   // 明らかな不具合がある場合
+        "FIXME:", // 将来的に修正が必要な場合
+        "TODO:",  // 未完了のタスクの場合
+        "NOTE:"   // 注釈を記載する場合
+    ],
+    "todo-tree.highlights.customHighlight": {
+        "BUG:": {
+            "icon": "bug",
+            "type":"tag",
+            "borderRadius": "1px",
+            "fontWeight": "bold",
+            "foreground": "#E1E4E8",
+            "background": "#F92672",
+            "iconColour": "#F92672",
+            "gutterIcon": true
+        },
+        "FIXME:": {
+            "icon": "alert",
+            "type":"tag",
+            "borderRadius": "1px",
+            "fontWeight": "bold",
+            "foreground": "#24292E",
+            "background": "#DA70D6",
+            "iconColour": "#DA70D6",
+            "gutterIcon": true
+        },
+        "TODO:": {
+            "icon": "check",
+            "type": "tag",
+            "borderRadius": "1px",
+            "fontWeight": "normal",
+            "foreground": "#E1E4E8",
+            "background": "#57A64A",
+            "iconColour": "#57A64A",
+            "gutterIcon": true
+        },
+        "NOTE:": {
+            "icon": "note",
+            "type": "tag",
+            "borderRadius": "1px",
+            "fontWeight": "bold",
+            "foreground": "#24292E",
+            "background": "#569CD6",
+            "iconColour": "#569CD6",
+            "gutterIcon": true
+        }
+    },
+
+    // -------------------------------------------------------------------------
+    // Draw.ioの設定
+    // -------------------------------------------------------------------------
+    // 画像は常にサイズ変更を要求したいため、trueではなくnullに設定する
+    "hediet.vscode-drawio.resizeImages": null,
+    // デフォルトテーマ
+    "hediet.vscode-drawio.theme": "kennedy",
+    // 下記のフォントを選択できるようにする
+    "hediet.vscode-drawio.customFonts": [
+        "Consolas",
+        "BIZ UDPゴシック"
+    ],
+
+    // -------------------------------------------------------------------------
+    // ESLintの設定
+    // -------------------------------------------------------------------------
+    "eslint.enable": true
+}

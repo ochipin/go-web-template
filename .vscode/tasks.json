@@ -1,0 +1,319 @@
+{
+    "version": "2.0.0",
+    "tasks": [
+        // --------------------------------------------------------------------
+        //   Dev Container 設定ファイルを生成する
+        // --------------------------------------------------------------------
+        {
+            "label": "devcontainer.jsonを作成する",
+            "icon": {
+                "color": "terminal.ansiWhite",
+                "id": "file-directory-create"
+            },
+            "type":  "shell",
+            "command": [
+                "bash .devcontainer/setup/3.devcontainer.sh; ",
+                "bash .devcontainer/setup/0.initialize.bash create-env; ",
+            ],
+            "dependsOn": [],
+            "problemMatcher": [],
+            "detail": "Dev Container環境を作成する",
+            "presentation": {
+                "echo": true,
+                "reveal": "always",
+                "focus": true,
+                "panel": "shared",
+                "showReuseMessage": false,
+                "clear": true,
+                "close": true
+            },
+            // 開発環境用ディレクトリを開いた時に自動的にdevcontainer.jsonを作成する
+            "runOptions": {
+                "runOn": "folderOpen"
+            }
+        },
+
+        // --------------------------------------------------------------------
+        //   development 関連のコンテナをすべて起動する
+        // --------------------------------------------------------------------
+        {
+            "label": "開発環境コンテナを起動する",
+            "type": "shell",
+            "icon": {
+                "color": "terminal.ansiCyan",
+                "id": "play-circle"
+            },
+            "command": "docker compose --profile development up -d",
+            "dependsOn": ["必要なディレクトリを作成"],
+            "problemMatcher": [],
+            "group": {
+                "kind": "build",
+                "isDefault": true
+            },
+            "detail": "docker compose up -d",
+            "presentation": {
+                "echo": true,
+                "reveal": "always",
+                "focus": true,
+                "panel": "shared",
+                "showReuseMessage": true,
+                "clear": false,
+                "close": false
+            }
+        },
+        {
+            "label": "必要なディレクトリを作成",
+            "type": "shell",
+            "command": [
+                "mkdir -p ./infra/postgres/data; ",
+                "mkdir -p ./infra/openldap/data/slapd; ",
+                "mkdir -p ./infra/openldap/data/configs; "
+            ],
+            "dependsOn": [],
+            "problemMatcher": [],
+            "group": "build",
+            "hide": true,
+            "presentation": {
+                "echo": false,
+                "reveal": "never",
+                "focus": false,
+                "panel": "shared",
+                "showReuseMessage": false,
+                "clear": true,
+                "close": true
+            }
+        },
+
+        // --------------------------------------------------------------------
+        //   development 関連のコンテナをすべて停止する
+        // --------------------------------------------------------------------
+        {
+            "label": "開発環境コンテナを停止する",
+            "type": "shell",
+            "icon": {
+                "color": "terminal.ansiRed",
+                "id": "stop-circle"
+            },
+            "command": "docker compose --profile development down",
+            "dependsOn": [],
+            "problemMatcher": [],
+            "group": {
+                "kind": "build",
+                "isDefault": true
+            },
+            "detail": "docker compose down",
+            "presentation": {
+                "echo": true,
+                "reveal": "always",
+                "focus": true,
+                "panel": "shared",
+                "showReuseMessage": true,
+                "clear": true,
+                "close": false
+            }
+        },
+
+        // --------------------------------------------------------------------
+        //   コンテナの状態を確認する
+        // --------------------------------------------------------------------
+        {
+            "label": "コンテナの状態を確認する",
+            "type": "shell",
+            "icon": {
+                "color": "terminal.ansiMagenta",
+                "id": "server-process"
+            },
+            "command": "docker compose ps -a",
+            "dependsOn": [],
+            "problemMatcher": [],
+            "group": {
+                "kind": "build",
+                "isDefault": true
+            },
+            "detail": "docker compose ps -a",
+            "presentation": {
+                "echo": true,
+                "reveal": "always",
+                "focus": true,
+                "panel": "shared",
+                "showReuseMessage": true,
+                "clear": true,
+                "close": false
+            }
+        },
+
+        // --------------------------------------------------------------------
+        //   各コンテナのログを確認する
+        // --------------------------------------------------------------------
+        {
+            "label": "コンテナログを確認する",
+            "type": "shell",
+            "icon": {
+                "color": "terminal.ansiMagenta",
+                "id": "note"
+            },
+            "command": "docker compose --profile development logs -f",
+            "dependsOn": [],
+            "problemMatcher": [],
+            "group": {
+                "kind": "build",
+                "isDefault": true
+            },
+            "detail": "docker compose logs -f",
+            "presentation": {
+                "echo": true,
+                "reveal": "always",
+                "focus": true,
+                "panel": "shared",
+                "showReuseMessage": false,
+                "clear": true,
+                "close": false
+            }
+        },
+
+        // --------------------------------------------------------------------
+        //   証明書作成用コンテナへアタッチする
+        // --------------------------------------------------------------------
+        {
+            "label": "証明書の作成コンテナへアタッチする",
+            "type": "shell",
+            "icon": {
+                "color": "terminal.ansiGreen",
+                "id": "credit-card"
+            },
+            "command": "docker compose run --rm -it openssl bash",
+            "dependsOn": [],
+            "problemMatcher": [],
+            "group": {
+                "kind": "build",
+                "isDefault": true
+            },
+            "detail": "docker compose run --rm -it openssl bash",
+            "presentation": {
+                "echo": true,
+                "reveal": "always",
+                "focus": true,
+                "panel": "shared",
+                "showReuseMessage": false,
+                "clear": true,
+                "close": true
+            }
+        },
+
+        // --------------------------------------------------------------------
+        //   RDBMSへ接続する
+        // --------------------------------------------------------------------
+        {
+            "label": "RDBMSへ接続する",
+            "type": "shell",
+            "icon": {
+                "color": "terminal.ansiGreen",
+                "id": "database"
+            },
+            "command": "docker compose run --rm -it dbconn psql",
+            "dependsOn": [],
+            "problemMatcher": [],
+            "group": {
+                "kind": "build",
+                "isDefault": true
+            },
+            "detail": "docker compose run --rm -it dbconn psql",
+            "presentation": {
+                "echo": true,
+                "reveal": "always",
+                "focus": true,
+                "panel": "shared",
+                "showReuseMessage": false,
+                "clear": true,
+                "close": true
+            }
+        },
+
+        // --------------------------------------------------------------------
+        //   LDAP接続テスト用コンテナへ接続する
+        // --------------------------------------------------------------------
+        {
+            "label": "LDAP接続テスト用コンテナへ接続する",
+            "type": "shell",
+            "icon": {
+                "color": "terminal.ansiGreen",
+                "id": "check"
+            },
+            "command": "docker compose run --entrypoint bash --rm -it ldap-cui",
+            "dependsOn": [],
+            "problemMatcher": [],
+            "group": {
+                "kind": "build",
+                "isDefault": true
+            },
+            "detail": "docker compose run --entrypoint bash --rm -it ldap-cui",
+            "presentation": {
+                "echo": true,
+                "reveal": "always",
+                "focus": true,
+                "panel": "shared",
+                "showReuseMessage": true,
+                "clear": true,
+                "close": false
+            }
+        },
+
+        // --------------------------------------------------------------------
+        //   開発環境のWebサーバコンテナを再起動する
+        // --------------------------------------------------------------------
+        {
+            "label": "Nginxを再起動する",
+            "type": "shell",
+            "icon": {
+                "color": "terminal.ansiCyan",
+                "id": "debug-restart"
+            },
+            "command": ["docker compose restart web-dev-server"],
+            "dependsOn": [],
+            "problemMatcher": [],
+            "group": "build",
+            "hide": false,
+            "detail": "docker volume rm maildir",
+            "presentation": {
+                "echo": true,
+                "reveal": "always",
+                "focus": true,
+                "panel": "shared",
+                "showReuseMessage": true,
+                "clear": true,
+                "close": false
+            }
+        },
+
+        // --------------------------------------------------------------------
+        //   MailHogコンテナのメールキャッシュを削除する
+        // --------------------------------------------------------------------
+        {
+            "label": "Volumesのデータをクリアする",
+            "type": "shell",
+            "icon": {
+                "color": "terminal.ansiRed",
+                "id": "clear-all"
+            },
+            "command": [
+                "docker compose down mailhog; ",
+                "docker volume prune -f; ",
+                "docker compose up mailhog -d; "
+            ],
+            "dependsOn": [],
+            "problemMatcher": [],
+            "group": "build",
+            "hide": false,
+            "detail": "docker volume rm maildir",
+            "presentation": {
+                "echo": true,
+                "reveal": "always",
+                "focus": true,
+                "panel": "shared",
+                "showReuseMessage": true,
+                "clear": true,
+                "close": false
+            }
+        }
+    ]
+}

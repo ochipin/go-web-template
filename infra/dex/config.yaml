@@ -1,0 +1,68 @@
+# ベースURLのデフォルトは /dex となっている。
+# もし、/dex 以外に変更する場合は、Nginxの proxy_pass に指定するパスプレフィックスも合わせること。
+#   ex) issuer: http://localhost:5556/auth にするなら、Nginx の proxy_pass を http://auth:5556/auth/ に変更
+issuer: http://localhost:5556/dex
+# セッションの保存場所
+storage:
+  type: memory
+  # 保存場所は、sqlite3,postgresも選択可能
+  # type: sqlite3
+  # config:
+    # file: /srv/dex/web/dex.db
+  # type: postgres
+  # config:
+    # database: postgres://user:password@database:5432/dex?sslmode=disable
+
+web:
+  http: 0.0.0.0:5556
+
+frontend:
+  dir: /srv/dex/web
+  # タイトルバーに表示される名前
+  issuer: "Ochipin Auth"
+  # 基本的には"dex.org"のままでよい。
+  # デフォルトのテーマに戻したい場合は、"dark" or "light"に変更すること。
+  theme: "dex.org"
+
+# 各種接続方法は、 https://dexidp.io/docs/connectors/ を参照すること!
+connectors:
+  - type: mockPassword
+    id: local
+    name: "Static Login"
+    config:
+      username: "testuser"
+      password: "testpass"
+      email: "test@example.com"
+      userID: "1234"
+
+#connectors:
+  #- type: ldap
+    #id: ldap
+    #name: LDAP
+    #config:
+      #host: ldap.example.com:389
+      #insecureNoSSL: true
+      #bindDN: cn=admin,dc=example,dc=com
+      #bindPW: your_password
+      #userSearch:
+        #baseDN: ou=People,dc=example,dc=com
+        #filter: "(objectClass=person)"
+        #username: uid
+        #idAttr: uid
+        #emailAttr: mail
+        #nameAttr: cn
+
+# 認証時に必要なクエリパラメータと、それに対応する設定項目
+#   認証URL例:
+#     http://localhost:8080/dex/auth?client_id=your-go-app&redirect_uri=http://localhost:8080/callback&response_type=code&scope=openid+email&state=random123
+#   * client_id     ⇒ id
+#   * redirect_uri  ⇒ redirectURIs
+staticClients:
+  - id: your-go-app
+    redirectURIs:
+      - "http://localhost:8080/callback"
+    name: "Go Web App"
+    secret: your-client-secret
+
+oauth2:
+  skipApprovalScreen: true

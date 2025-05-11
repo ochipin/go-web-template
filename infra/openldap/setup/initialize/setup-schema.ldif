@@ -1,0 +1,122 @@
+# =====================================================================
+#   カスタムスキーマ
+# =====================================================================
+# dn: cn=<任意の名前>,cn=schema,cn=config
+# objectClass: olcSchemaConfig
+# cn: <任意の名前> dnで指定した、cnと同じ名前を指定する
+# olcAttributeTypes: (
+#   OID: オブジェクト識別子
+#     1.1.2.1.... から始まる場合は属性値.
+#     1.1.2.1.1.1 というように、他の属性値と被らないように設定する必要がある
+#   NAME: 属性の名前
+#   DESC: 属性の説明
+#   SUP: 基底オブジェクトクラス
+#     ここに指定したオブジェクトクラスの属性を継承して使用することができる
+#   EQUALITY: 照合規則(等価性)
+#     objectIdentifierMatch: OID
+#     distinguishedNameMatch: DN
+#     caseIgnoreMatch: 英大小文字の区別なし. 空白無視
+#     caseExactMatch: 英大小文字の区別あり. 空白無視
+#     numericStringMatch: 数値文字列
+#     booleanMatch: 真偽値
+#     octetStringMatch: 任意のオクテット文字列
+#   ORDERING: 大小関係の検査を行う場合に適用される照合規則
+#     caseIgnoreOrderingMatch: 英大小文字区別なし. 空白無視
+#     caseExactOrderingMatch: 英大小文字区別あり. 空白無視
+#     numericStringOrderMatch: 数値文字列
+#   SUBSTR: 部分一致条件
+#     caseIgnoreSubstringsMatch: 英大小文字区別なし. 空白無視
+#     caseExactSubstringsMatch: 英大小文字区別あり. 空白無視
+#     numericStringSubstringsMatch: 数値文字列
+#   SYNTAX: 属性データ型
+#     1.3.6.1.4.1.1466.115.121.1.7: 真偽値
+#     1.3.6.1.4.1.1466.115.121.1.12: DN
+#     1.3.6.1.4.1.1466.115.121.1.15: UTF-8文字列
+#     1.3.6.1.4.1.1466.115.121.1.26: ASCII文字列
+#     1.3.6.1.4.1.1466.115.121.1.27: 整数
+#     1.3.6.1.4.1.1466.115.121.1.34: DNおよびUID
+#     1.3.6.1.4.1.1466.115.121.1.36: 数値文字列
+#     1.3.6.1.4.1.1466.115.121.1.38: オブジェクト識別子(OID)
+#     1.3.6.1.4.1.1466.115.121.1.40: 任意のオクテット文字列
+#     1.3.6.1.4.1.1466.115.121.1.44: 表示可能な文字列
+#   SINGLE-VALUE: 属性値を複数所持しない
+#   NO-USER-MODIFICATION: 利用者の更新不可. システムのみが更新可能.
+#   USAGE: 属性種別
+#     userApplications: ユーザ属性
+#     directoryOperation:　運用属性
+#     distributedOperation: DSA共有運用属性
+#     DSAOperation: DSA特定運用属性
+# )
+# olcObjectClasses: (
+#   OID: オブジェクト識別子
+#     1.1.2.2.... から始まる場合は属性値.
+#     1.1.2.2.1.1 というように、他の属性値と被らないように設定する必要がある
+#   NAME: オブジェクトクラスの名前
+#   DESC: 説明
+#   SUP: 基底オブジェクトクラス
+#   kind: オブジェクトクラスの種類
+#     抽象型(ABSTRACT):
+#      - このオブジェクトクラスを利用する、オブジェクトクラスに共通に利用される定義を行う
+#     構造型(STRUCTURAL):
+#      - 一般的に使用されるオブジェクトクラス. エントリは、構造型オブジェクトクラスに属す必要がある
+#     補助型(AUXILIARY):
+#      - 構造型オブジェクトクラスに属性を付与する場合に使用する.
+#   MUST: 必須属性
+#   MAY: オプション属性
+# )
+
+dn: cn=mySchema,cn=schema,cn=config
+objectClass: olcSchemaConfig
+cn: mySchema
+olcAttributeTypes: (
+  1.1.2.1.11.1
+  NAME 'mySchema1'
+  SYNTAX 1.3.6.1.4.1.1466.115.121.1.15
+  EQUALITY caseIgnoreMatch
+  SUBSTR caseIgnoreSubstringsMatch
+  SINGLE-VALUE )
+olcAttributeTypes: (
+  1.1.2.1.11.2
+  NAME 'mySchema2'
+  SYNTAX 1.3.6.1.4.1.1466.115.121.1.15
+  EQUALITY caseIgnoreMatch
+  SUBSTR caseIgnoreSubstringsMatch
+  SINGLE-VALUE )
+olcAttributeTypes: (
+  1.1.2.1.11.3
+  NAME 'mySchema3'
+  SYNTAX 1.3.6.1.4.1.1466.115.121.1.15
+  EQUALITY caseIgnoreMatch
+  SUBSTR caseIgnoreSubstringsMatch
+  SINGLE-VALUE )
+olcAttributeTypes: (
+  1.1.2.1.11.4
+  NAME 'mySchema4'
+  SYNTAX 1.3.6.1.4.1.1466.115.121.1.15
+  EQUALITY caseIgnoreMatch
+  SUBSTR caseIgnoreSubstringsMatch
+  SINGLE-VALUE )
+olcAttributeTypes: (
+  1.1.2.1.11.5
+  NAME 'mySchema5'
+  SYNTAX 1.3.6.1.4.1.1466.115.121.1.15
+  EQUALITY caseIgnoreMatch
+  SUBSTR caseIgnoreSubstringsMatch
+  SINGLE-VALUE )
+olcObjectClasses: (
+  1.1.2.2.11.1
+  NAME 'mySchema'
+  SUP top AUXILIARY
+  MAY (
+    mySchema1 $ mySchema2 $ mySchema3 $ mySchema4 $ mySchema5
+  ) )
+
+#dn: cn=myPosixGroup,cn=schema,cn=config
+#objectClass: olcSchemaConfig
+#cn: myPosixGroup
+#olcObjectClasses: ( 1.3.6.1.4.1.99999.1.1
+#  NAME 'myPosixGroup'
+#  DESC 'Extended posixGroup to include member attribute'
+#  SUP posixGroup
+#  STRUCTURAL
+#  MAY member )

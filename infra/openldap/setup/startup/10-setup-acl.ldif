@@ -1,0 +1,43 @@
+#######################################################################
+# ACL設定 - https://www.openldap.org/doc/admin24/access-control.html
+#######################################################################
+#
+# ACL設定方法:
+#
+# olcAccess: to <what> [ by <who> <access> [ <control> ] ]+
+#   what: アクセス制御するエントリまたは属性
+#   who: アクセス権が与えられる実体
+#   access: 付与するアクセス権の種類
+#   control: アクセス制御のフロー
+#
+# 例:
+#   olcAccess: to dn=<dnpattern> と記載する
+#   # ou=People,dc=example,dc=com 配下のエントリに参照権を与える
+#   olcAccess: to dn.subtree="ou=People,dc=example,dc=com"
+#   by * read
+#
+# dn.* に記載できる設定値:
+#   regex: 正規表現。マッチするエントリが対象となる
+#   exact: 完全一致するエントリのみ対象
+#   base:  <dnpattern>に指定したdnに該当するエントリが対象
+#   one: <dnpattern>に指定したdnの直下のエントリのみ対象
+#   subtree: <dnpattern>に指定したdnと、配下のエントリが対象
+#   children: <dnpattern>に指定したdn配下のエントリが対象
+#
+dn: olcDatabase={1}mdb,cn=config
+changetype: modify
+replace: olcAccess
+# パスワード属性は特別扱い
+olcAccess: to attrs=userPassword
+  by dn="cn=Manager,dc=example,dc=com" write
+  by anonymous auth
+  by self write
+  by * none
+# その他すべての属性
+olcAccess: to *
+  by dn="cn=Manager,dc=example,dc=com" write
+  by self read
+  by * none
+#olcAccess: to *
+#  by peername.ip=0.0.0.0/24 write
+#  by * none

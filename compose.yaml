@@ -1,0 +1,265 @@
+volumes:
+  # mailhogのメールデータ永続化ディレクトリ
+  maildir: {}
+  # Redisのデータ永続化
+  redisdata:
+
+services:
+  #############################################################################
+  #   アプリケーション本体
+  #############################################################################
+  app:
+    build:
+      context: .
+      dockerfile: ./.devcontainer/setup/Dockerfile
+      args:
+        - USERID=${UID}
+        - GROUPID=${GID}
+        - GO_VERSION=${GO_VERSION}
+        - NODE_VERSION=${NODE_VERSION}
+        - HTTP_PROXY=${http_proxy:-}
+        - HTTPS_PROXY=${https_proxy:-}
+      target: ${STAGE_BUILD}
+    image: ${PROJECT_NAME}/app
+    env_file:
+      - .env
+    profiles:
+      - application
+      - production
+    working_dir: /go/src/app
+    volumes:
+      - .:/go/src/app
+    # ports:
+      # - 3000:3000
+
+
+  #############################################################################
+  #   テスト用Webサーバ
+  #############################################################################
+  web-server-setting: &web-server-setting
+    build:
+      context: .
+      dockerfile: ./infra/nginx/Dockerfile
+      args:
+        - HTTP_PROXY=${http_proxy:-}
+        - HTTPS_PROXY=${https_proxy:-}
+    image: ${PROJECT_NAME}/web-server
+    ports:
+      - 8080:80
+      - 8443:443
+    hostname: web-server
+    profiles:
+      - settings
+    extra_hosts:
+      - "localhost:host-gateway"
+      - "host.docker.internal:host-gateway"
+
+  # 開発時に使用するWebサーバ
+  web-dev-server:
+    <<: *web-server-setting
+    profiles: ["development"]
+    volumes:
+      - ./infra/nginx/setup/dev-http.conf:/etc/nginx/conf.d/default.conf
+      # - ./infra/openssl/data:/certs
+
+  # ステージング環境で使用するWebサーバ
+  web-staging-server:
+    <<: *web-server-setting
+    profiles: ["staging"]
+    volumes:
+      # ステージング環境で動かす場合はサーバ証明書は必須とする
+      - ./infra/nginx/setup/staging-https.conf:/etc/nginx/conf.d/default.conf
+      - ./infra/openssl/data:/certs
+    logging:
+      driver: "${LOGGING_DRIVER:-none}"
+      options:
+        syslog-address: "${LOGGING_ADDRESS:-}"
+        tag: "nginx"
+
+
+  #############################################################################
+  #   OpenSSLコマンドによる証明書作成用コンテナ
+  #############################################################################
+  # 使用方法は /infra/openssl/README.md を参照すること
+  openssl:
+    hostname: openssl
+    image: nginx:${NGINX_VERSION}
+    volumes:
+      - ./infra/openssl:/certs
+    working_dir: /certs
+    profiles:
+      - manual
+    user: ${UID}:${GID}
+
+
+  #############################################################################
+  #   テスト用メールサーバ
+  #############################################################################
+  mailhog:
+    image: mailhog/mailhog
+    ports:
+      - 8025
+      - 1025
+    profiles:
+      - development
+      - staging
+    environment:
+      MH_STORAGE: maildir
+      MH_MAILDIR_PATH: /tmp
+    volumes:
+      - maildir:/tmp
+
+
+  #############################################################################
+  #   テスト用リレーショナルデータベース
+  #############################################################################
+  database:
+    build:
+      context: .
+      dockerfile: ./infra/postgres/Dockerfile
+      args:
+        - PGVERSION=${PGVERSION}
+        - HTTP_PROXY=${http_proxy:-}
+        - HTTPS_PROXY=${https_proxy:-}
+    hostname: ${PGHOST}
+    image: ${PROJECT_NAME}/database
+    ports:
+      - 5432
+    environment:
+      TZ: ${TZ}
+      POSTGRES_DB: ${PGDATABASE}
+      POSTGRES_USER: ${PGUSER}
+      POSTGRES_PASSWORD: ${PGPASSWORD}
+    profiles:
+      - development
+      - staging
+    # volumes:
+      # データ永続化
+      # - ./infra/postgres/data:/var/lib/postgresql/data
+      # verify-fullなどの対応用
+      # - ./infra/openssl/data/server.crt:/certs/server.crt
+      # - ./infra/openssl/data/server.key:/certs/server.key
+      # - ./infra/openssl/data/ca.crt:/certs/ca.crt
+
+  # DB接続検証用コンテナ. 動作確認用
+  dbconn:
+    image: postgres:${PGVERSION}
+    env_file:
+      - .env
+    profiles:
+      - manual
+    # volumes:
+      # verify-fullなどの対応用
+      # - ./infra/openssl/data/client.crt:/certs/client.crt
+      # - ./infra/openssl/data/client.key:/certs/client.key
+      # - ./infra/openssl/data/ca.crt:/certs/ca.crt
+
+
+  #############################################################################
+  #   OpenLDAPコンテナ
+  #############################################################################
+  # 使用方法は /infra/openldap/README.md を参照すること
+  openldap:
+    build:
+      context: .
+      dockerfile: ./infra/openldap/Dockerfile
+      args:
+        HTTP_PROXY: ${http_proxy:-}
+        HTTPS_PROXY: ${https_proxy:-}
+        CONTAINER_USER: ${UID:-0}
+        CONTAINER_GROUP: ${GID:-0}
+    ports:
+      - 389 # LDAP
+      - 636 # LDAPS
+    hostname: openldap
+    image: ${PROJECT_NAME}/openldap
+    env_file:
+      - .env
+    profiles:
+      - development
+      - staging
+    volumes:
+      # LDAP起動時に適用するサーバ側のセットアップ用LDIFを配置する
+      - ./infra/openldap/setup:/setup
+      # LDAPクライアント側の設定ファイルを配置する
+      - ./infra/openldap/ldap.conf:/etc/openldap/ldap.conf
+      - ./infra/openldap/ldap.conf:/root/.ldaprc
+      # 各種証明書の設定
+      # - ./infra/openssl/data:/etc/openldap/certs
+      # - ./infra/openssl/data/ca.crt:/usr/local/share/ca-certificates/cacert.crt
+      # LDAPサーバが必要とするデータディレクトリ
+      # - ./infra/openldap/data/configs:/etc/openldap/slapd.d
+      # - ./infra/openldap/data/slapd:/var/lib/openldap/openldap-data
+    ulimits:
+      nofile:
+        soft: 8192
+        hard: 8192
+
+  # GUI形式のOpenLDAPコンテナへの接続テスト用コンテナ
+  ldap-gui:
+    image: osixia/phpldapadmin:latest
+    hostname: phpldapadmin
+    ports:
+      - 80
+    env_file:
+      - .env
+    environment:
+      PHPLDAPADMIN_HTTPS: false
+      PHPLDAPADMIN_LDAP_HOSTS: openldap
+    profiles:
+      - development
+    # volumes:
+      # - ./infra/openssl/data:/certs
+
+  # CUI形式のOpenLDAPコンテナへの接続テスト用コンテナ
+  ldap-cui:
+    image: ${PROJECT_NAME}/openldap
+    env_file:
+      - .env
+    profiles:
+      - manual
+    volumes:
+      # LDAPクライアント側の設定ファイルを配置する
+      - ./infra/openldap/ldap.conf:/etc/openldap/ldap.conf
+      - ./infra/openldap/ldap.conf:/root/.ldaprc
+      # 各種証明書の設定
+      # - ./infra/openssl/data:/etc/openldap/certs
+
+
+  #############################################################################
+  #   認証用コンテナ
+  #############################################################################
+  auth:
+    hostname: auth
+    image: dexidp/dex:${DEX_VERSION}
+    ports:
+      - 5556
+    profiles:
+      - development
+      - staging
+    volumes:
+      # dex設定ファイル
+      - ./infra/dex/config.yaml:/etc/dex/config.yaml
+      # Dex のテーマ・スタイル・UI
+      - ./infra/dex/setup/static:/srv/dex/web/static
+      - ./infra/dex/setup/theme:/srv/dex/web/themes/dex.org
+      - ./infra/dex/setup/templates:/srv/dex/web/templates
+      # セッション永続化
+      # - ./infra/dex/dex.db:/srv/dex/web/dex.db
+    command: ["dex", "serve", "/etc/dex/config.yaml"]
+
+  # セッション管理
+  session:
+    hostname: session
+    image: redis:8
+    ports:
+      - 6379
+    profiles:
+      - development
+      - staging
+      - production
+    volumes:
+      - ./infra/redis/redis.conf:/usr/local/etc/redis/redis.conf:ro
+      - ./infra/redis:/redis
+      - redisdata:/data
+    command: ["redis-server", "/usr/local/etc/redis/redis.conf"]

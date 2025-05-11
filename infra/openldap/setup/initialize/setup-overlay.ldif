@@ -1,0 +1,26 @@
+# MemberOfの有効化
+#   memberofはユーザがどのグループに所属しているのかを把握するために使用される
+#   システム用途では主にSSOに使用される。もし有効化する場合は下記のコメントを外すこと
+#   注意点: 必ず "olcMemberOfGroupOC" に PosixGroup を継承したスキーマを指定すること
+#dn: olcOverlay=memberof,olcDatabase={1}mdb,cn=config
+#objectClass: olcMemberOf
+#objectClass: olcOverlayConfig
+#olcOverlay: memberof
+#olcMemberOfGroupOC: myPosixGroup
+#olcMemberOfMemberAD: member
+#olcMemberOfRefInt: TRUE
+
+# Ppolicyの有効化
+dn: olcOverlay=ppolicy,olcDatabase={1}mdb,cn=config
+objectClass: olcOverlayConfig
+objectClass: olcPPolicyConfig
+olcOverlay: ppolicy
+olcPPolicyDefault: cn=default,ou=Policies,${LDAP_ROOT_SUFFIX}
+olcPPolicyHashCleartext: TRUE
+
+# SyncProvの有効化
+#dn: olcOverlay=syncprov,olcDatabase={1}mdb,cn=config
+#objectClass: olcOverlayConfig
+#objectClass: olcSyncProvConfig
+#olcOverlay: syncprov
+#olcSpSessionLog: 1000
