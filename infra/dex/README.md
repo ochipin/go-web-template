@@ -28,6 +28,12 @@
     command: ["dex", "serve", "/etc/dex/config.yaml"]
 ```
 
+## コンテナイメージ
+
+ * 公式: https://hub.docker.com/r/dexidp/dex/ を利用
+
+利用用途に関するドキュメントは上記のURLからは確認できないため、詳細は https://github.com/dexidp/dex の README.md を参考にすること!
+
 ## DexのUIを変更する
 UIの変更は `/infra/dex/setup` ディレクトリ配下の3つのディレクトリ内にあるファイルを修正して行う。
 

@@ -140,6 +140,8 @@ services:
       # - ./infra/openssl/data/server.crt:/certs/server.crt
       # - ./infra/openssl/data/server.key:/certs/server.key
       # - ./infra/openssl/data/ca.crt:/certs/ca.crt
+      # DBのリストア
+      # - ./database.sql:/docker-entrypoint-initdb.d/database.sql
 
   # DB接続検証用コンテナ. 動作確認用
   dbconn:

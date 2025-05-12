@@ -1,3 +1,5 @@
+> **※このリポジトリは新規Webアプリ開発用のテンプレートです。** 使用時は本READMEを参考に、プロジェクトに合わせて各セクションを編集してください。
+
 # <プロジェクト名を記載すること>
 
 ## 目的・背景
@@ -24,19 +26,25 @@ git clone https://github.com/ochipin/go-web-template.git
 
 ## 使用言語・ライブラリ
 
+### 言語・ライブラリ
+
 | Command       | Language   | Framework | Linter        |
 |:--            |:--         |:--        |:--            |
 | `go`          | GoLang     | Gin       | golangci-lint |
 | `node`,`yarn` | TypeScript | React     | ESLint        |
 
-### 使用ミドルウェア
+### ミドルウェア
 
-| Application | Type      | Usage |
-|:--          |:--        |:--    |
-| PostgreSQL  | RDBMS     | ユーザが入力したデータを保存する |
-| OpenLDAP    | LDAP      | ユーザ情報(ID/Password)を管理する |
-| Dex         | Auth      | 認証・認可サーバ. LDAPと連携する |
-| Nginx       | WebServer | DexやGoのWebアプリのリバースプロキシ |
+| Application | Type       | Usage |
+|:--          |:--         |:--    |
+| PostgreSQL  | RDBMS      | ユーザが入力したデータを保存する |
+| OpenLDAP    | LDAP       | ユーザ情報(ID/Password)を管理する |
+| Dex         | Auth       | 認証・認可サーバ. LDAPと連携する |
+| Nginx       | WebServer  | DexやGoのWebアプリのリバースプロキシとして使用する |
+| Redis       | Session    | セッション情報(アクセストークンやログイン状態など)の保存先として使用する |
+| MailHog     | MailServer | テスト用のメールサーバとして使用する |
+
+※MailHogは完全テスト用なので、本番環境での使用は避けること!
 
 ## 環境構築
 
@@ -49,7 +57,12 @@ git clone https://github.com/ochipin/go-web-template.git
 ※ホスト側から作業を行うのではなく、必ずDev Containerのコンテナ上で作業を行うこと。
 
 #### 各種ミドルウェアのセットアップ方法
-ミドルウェアのセットアップは、デフォルト値が設定済みである。コンテナ内からであれば、すぐに動きを確認できる。
+開発環境用のミドルウェアのセットアップは、デフォルト値が設定済みである。Dev Containerからであれば、以下のコマンドですぐに動きを確認できる。
+
+```bash
+# 開発環境用のコンテナ群は以下のコマンドで起動する
+docker compose --profile development up -d
+```
 
 ただし、LDAPのDNを変更する、PostgreSQLのセキュア設定をする、など細かい設定を実施する場合は、下記のミドルウェア構築手順書を参考に設定を変更すること。
 
@@ -57,13 +70,10 @@ git clone https://github.com/ochipin/go-web-template.git
 2. [OpenLDAPセットアップ手順](/infra/openldap/README.md)
 3. [Webサーバセットアップ手順](/infra/nginx/README.md)
 4. [認証・認可サーバセットアップ手順](/infra/dex/README.md)
-5. [テスト用メールサーバのセットアップ手順](/infra/mailhog/README.md)
+5. [セッション管理サーバセットアップ手順](/infra/redis/README.md)
+6. [テスト用メールサーバのセットアップ手順](/infra/mailhog/README.md)
 
-各ミドルウェアは、以下のコマンドで起動する。
-
-```
-docker compose --profile development up -d
-```
+※ステージング環境や本番環境など、用途毎に設定が必要な場合はcompose.yamlを改修し使用すること。
 
 <!-- デプロイ先の環境が増えてきたら、下記に追加していく
 ### [ステージング環境構築手順](docs/setup-staging-environment.md)
@@ -80,7 +90,8 @@ docker compose --profile development up -d
 * [デスクトップアプリの開発](/docs/wails-setup-guide.md)
 
 ## プロジェクト参加方法
- コード規約、ブランチ運用ルールなどを記載しているため、詳細は[CONTRIBUTING.md](CONTRIBUTING.md)を参照すること。
+* 本プロジェクトは GitHub Flow に基づき、PRベースで開発を進める。
+* コード規約・ブランチ運用ルールなどを記載しているため、詳細は[CONTRIBUTING.md](CONTRIBUTING.md)を参照すること。
 
 ## 連絡方法
 <!-- Mattermost, Teams, Slack など、連絡手段を記載する -->

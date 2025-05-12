@@ -47,6 +47,12 @@ services:
         hard: 8192
 ```
 
+## コンテナイメージ
+
+ * 公式: https://hub.docker.com/_/alpine を利用
+
+※OpenLDAPは、Alpine Linuxをベースに作成しているため、詳細は [Dockerfile](/infra/openldap/Dockerfile) を確認すること!
+
 ## 環境変数の設定
 `.env`ファイルに以下の設定を記載する。
 

@@ -35,6 +35,10 @@ services:
       # - ./infra/openssl/data/ca.crt:/certs/ca.crt
 ```
 
+## コンテナイメージ
+
+ * 公式: https://hub.docker.com/_/postgres を利用
+
 ## 環境変数の設定
 `.env`ファイルに以下の設定を記載する。
 
@@ -313,21 +317,11 @@ v16用のDockerコンテナを入れ直し、PostgreSQLの論理バックアッ�
    ```
    docker compose build
    ```
-3. コンテナへアタッチする - (ホスト側作業)
+3. 論理バックアップを実施する - (ホスト側作業)
+   ```bash
+   docker compose exec -it database pg_dumpall -U postgres > backup.sql
    ```
-   docker compose up -d database
-   docker compose exec -it database bash
-   ```
-4. 論理バックアップを実施する - (コンテナ側作業)
-   ```
-   cd /var/lib/postgresql/data
-   pg_dumpall -U postgres > backup.sql
-   ```
-5. バックアップデータを取り出す - (ホスト側作業)
-   ```
-   sudo mv ./infra/postgres/data/backup.sql ./infra/postgres/
-   ```
-5. コンテナを停止する - (ホスト側作業)
+4. コンテナを停止する - (ホスト側作業)
    ```
    docker compose down
    ```
@@ -353,35 +347,28 @@ v16用のDockerコンテナを入れ直し、PostgreSQLの論理バックアッ�
    # 新データ置き場を作成する
    mkdir -p ./infra/postgres/data
    ```
-4. compose.yamlを修正する - (ホスト側作業)
+4. compose.yamlを次のように修正する - (ホスト側作業)
    ```yaml
    database:
      :
      volumes:
-       :
-       # v16で取得したバックアップデータをmountする
-       - ./infra/postgres/backup.sql:/var/lib/postgresql/backup.sql
+       # backup.sqlを起動時に実行できるようにマウントする
+       - ./backup.sql:/docker-entrypoint-initdb.d/backup.sql
    ```
-5. コンテナへアタッチする - (ホスト側作業)
-   ```
+5. コンテナを起動する - (ホスト側作業)
+   ```bash
+   # これにより、backup.sqlが実行され、データが復元される
    docker compose up -d database
-   docker compose exec -it database bash
    ```
-6. v16で取得したデータをリストアする - (コンテナ側作業)
+6. リストアされたかDBを確認する - (ホスト側作業)
    ```
-   cd /var/lib/postgresql
-   psql -U postgres < backup.sql
+   docker compose exec -it database psql -U postgres  -c "\l"
    ```
 7. compose.yamlからbackup.sqlマウントを外して、コンテナを起動し直す - (ホスト側作業)
-8. 再度コンテナへアタッチしてDBを確認する - (コンテナ側作業)
-   ```
-   psql -U postgres
-   \l
-   ```
 8. データが正しくリストアされたか確認後、後片付けを実施する - (ホスト側作業)
    ```
    sudo rm -rf ./infra/postgres/data.old
-   sudo rm -f ./infra/postgres/backup.sql
+   rm -f backup.sql
    ```
 
 以上で、PostgreSQLのアップグレードは完了となる。

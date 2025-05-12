@@ -42,6 +42,10 @@ services:
     user: ${UID}:${GID}
 ```
 
+### コンテナイメージ
+
+ * 公式: https://hub.docker.com/_/nginx を利用
+
 ### コンテナへアタッチする
 ```
 docker compose run --entrypoint bash --rm -it openssl
