@@ -3,10 +3,13 @@
 
 ## compose.yamlの内容を確認する
 
-[`mailhog`](/compose.yaml)セクションを使用する。
+[`mailserver`](/compose.yaml)セクションを使用する。
  
 ```yaml
-   mailhog:
+volumes:
+  maildir:
+
+  mailserver:
     image: mailhog/mailhog
     ports:
       - 8025
@@ -56,7 +59,7 @@ volumes:
 
 1. コンテナを停止する
    ```
-   docker compose down mailhog
+   docker compose down mailserver
    ```
 2. 削除するボリュームを確認する
    ```
@@ -70,7 +73,7 @@ volumes:
    ```
 4. コンテナを起動する
    ```
-   docker compose up mailhog -d
+   docker compose up mailserver -d
    ```
 
 ※コンテナは起動中はデータの削除はできないため、必ずコンテナを停止してから作業を行うこと!

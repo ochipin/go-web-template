@@ -286,7 +286,7 @@
         },
 
         // --------------------------------------------------------------------
-        //   MailHogコンテナのメールキャッシュを削除する
+        //   Mailコンテナのメールキャッシュを削除する
         // --------------------------------------------------------------------
         {
             "label": "Volumesのデータをクリアする",
@@ -296,9 +296,9 @@
                 "id": "clear-all"
             },
             "command": [
-                "docker compose down mailhog; ",
+                "docker compose down mailserver; ",
                 "docker volume prune -f; ",
-                "docker compose up mailhog -d; "
+                "docker compose up mailserver -d; "
             ],
             "dependsOn": [],
             "problemMatcher": [],
