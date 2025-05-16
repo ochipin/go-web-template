@@ -9,7 +9,7 @@
 ## 使用ミドルウェア一覧
 開発環境では、主に以下のミドルウェアを使用する。(`compose.yaml`内の表記と合わせています)
 
-|    | Compose側の名前 | 使用ミドルウェア     | 資料上の名前       | 用途 |
+|    | Compose側の名前 | 使用ミドルウェア     | 図内の名称       | 用途 |
 |:-- |:--                         |:--               |:--                |:-- |
 | [★](/infra/nginx/README.md)    | `web-dev-server` | `Nginx`           | Nginx | Webサーバ。各ミドルウェア、Appコンテナのサービスへのリバースプロキシとして使用する。 |
 | [★](/infra/mailhog/README.md)  | `mailserver`     | `MailHog`         | Mail  | テスト用のメールサーバ。 |
@@ -21,7 +21,7 @@
 ※各ミドルウェアの **「セットアップ手順」** は「★」マークをクリックして参照すること。
 
 ### ミドルウェアのコンテナイメージ
-各ミドルウェアはDockerコンテナとなっており、Docker Hubを起点に、次のようにイメージを取得して環境を構築している。
+各ミドルウェアはDockerコンテナとなっており、Docker Hubを起点に`docker pull`でイメージを取得して環境を構築している。
 
 ![](/docs/images/docker-images.png)
 
@@ -50,16 +50,17 @@ Dev Containerを利用した開発になっており、開発者は以下の赤�
  * [Dockerfile](/.devcontainer/setup/Dockerfile)
 
 ## ネットワーク
-開発用コンテナ・各種ミドルウェアはすべて同一の Docker Network 内に存在している。そのため、次のような構成で各ミドルウェアとの連携が可能になる。
+各コンテナはすべて同一のDockerネットワークに存在するため、`publish`オプションでホストにポートを公開せずとも、コンテナ名(エイリアス)を通じて相互に通信できる。
 
 ![](/docs/images/docker-network.png)
 
-各コンテナはすべて1つのcompose.yamlで構成されているため、以下のように同じネットワーク内での通信が可能になる。
+全てのコンテナ1つのcompose.yamlで定義されており、同じDockerネットワークに自動的に接続される。これにより、各サービスは **`コンテナ名:ポート番号`** 形式での名前解決・通信が可能になる。
 
 ![](/docs/images/compose-network.png)
 
 ## 動作確認方法
-Webアプリの動作確認は、Nginxのリバースプロキシを利用した動作確認方法となる。`publish`しているポートヘアクセスすることで、許可しているサービスヘアクセスできる。 (図下のChromeアイコンに注目)
+この構成では、Nginxが唯一ホストにポート（8080）を公開しており、Webアプリや認証画面などの各サービスへはNginxのリバースプロキシ経由でアクセスできる。
+
 
 ![](/docs/images/browser-access.png)
 
@@ -70,7 +71,7 @@ Nginxは8080ポートをpublishしており、メール(mailhog)や認証(dex)�
 | http://localhost:8080/      | app        | アプリケーション本体の動作確認 | 
 | http://localhost:8080/mail/ | mailserver | テスト用メールサーバの受信履歴 |
 | http://localhost:8080/dex/  | dex        | 認証・認可サーバ  |
-| http://localhost:8080/ldap/ | openldap   | LDAPクライアント(動作確認用で、開発環境でのみ動作する. 図には未記載) |
+| http://localhost:8080/ldap/ | openldap   | LDAPクライアント. 図に未記載(ただしルーティング設定済み) |
 
 
 ## 各種ボリュームの構成

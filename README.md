@@ -36,14 +36,14 @@ git clone https://github.com/ochipin/go-web-template.git
 
 ### ミドルウェア
 
-| Application | Type       | Usage |
-|:--          |:--         |:--    |
-| PostgreSQL  | RDBMS      | ユーザが入力したデータを保存する |
-| OpenLDAP    | LDAP       | ユーザ情報(ID/Password)を管理する |
-| Dex         | Auth       | 認証・認可サーバ. LDAPと連携する |
-| Nginx       | WebServer  | DexやGoのWebアプリのリバースプロキシとして使用する |
-| Redis       | Session    | セッション情報(アクセストークンやログイン状態など)の保存先として使用する |
-| MailHog     | MailServer | テスト用のメールサーバとして使用する |
+| Application | Type            | Usage |
+|:--          |:--              |:--    |
+| PostgreSQL  | RDBMS           | ユーザが入力したデータを保存する |
+| OpenLDAP    | LDAP            | ユーザ情報(ID/Password)を管理する |
+| Dex         | Authentication  | 認証・認可サーバ. LDAPと連携する |
+| Nginx       | Web Server      | DexやGoのWebアプリのリバースプロキシとして使用する |
+| Redis       | Session Manager | セッション情報(アクセストークンやログイン状態など)の保存先として使用する |
+| MailHog     | Mail Server     | テスト用のメールサーバとして使用する |
 
 ## 環境構築
 
