@@ -1,16 +1,8 @@
 # 開発環境内での動作確認方法
-開発環境内での動作確認の方法について説明する。必ず開発環境の構築まで完了していること。
+開発環境内での動作確認の方法について説明する。必ず開発環境の構築、ミドルウェアの構築まで完了していること。
 
  * [開発環境構築手順](/docs/setup-dev-environment.md)
-
-
-## 動作確認用サービス
-開発環境のみ、動作確認用の以下のサービスが動いており、LDAPやMailHogを使用して正常にメールの送信やLDAPデータの追加・削除などの動きを確認できる。
-
-| 対象 | クエリパス  | 説明 |
-|:--   |:--   |:--   |
-| OpenLDAP | * http://localhost:8080/ldap/ <br> * https://localhost:8443/ldap/ | phpLDAPAdminというアプリが動いており、LDAPの情報が確認できる。<br>詳細は、 [OpenLDAPセットアップ手順](/infra/openldap/README.md)を確認すること。 |
-| MailHog  | * http://localhost:8080/mail/ <br> * https://localhost:8443/mail/ | MailHogというWebメールシステムが動作しており、テスト用のメールを受信し、<br>受け取ったメールの内容をWebから確認するためのテスト用Webサーバである。 |
+ * [アーキテクチャ補足事項](/docs/middleware.md)
 
 ## PostgreSQLの確認方法
 以下拡張機能を導入しており、GUIでデータベースに正しくデータが格納されているか確認できる。

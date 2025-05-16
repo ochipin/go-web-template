@@ -1,6 +1,7 @@
 > **※このリポジトリは新規Webアプリ開発用のテンプレートです。** 使用時は本READMEを参考に、プロジェクトに合わせて各セクションを編集してください。
 
 # <プロジェクト名を記載すること>
+<!-- 例: Awesome Web App, Inventory Managerなど -->
 
 ## 目的・背景
 <!-- なぜこのプロジェクトが存在するのか、その主要な目的は何かを簡潔に説明する。 -->
@@ -24,7 +25,7 @@
 git clone https://github.com/ochipin/go-web-template.git
 ```
 
-## 使用言語・ライブラリ
+## 使用言語・ミドルウェア
 
 ### 言語・ライブラリ
 
@@ -44,34 +45,18 @@ git clone https://github.com/ochipin/go-web-template.git
 | Redis       | Session    | セッション情報(アクセストークンやログイン状態など)の保存先として使用する |
 | MailHog     | MailServer | テスト用のメールサーバとして使用する |
 
-※MailHogは完全テスト用なので、本番環境での使用は避けること!
-
 ## 環境構築
 
 ### 開発環境セットアップ手順
 1. [開発環境・ステージング環境用の証明書の発行](/infra/openssl/README.md)  
-   未発行の場合は必ず発行すること。
+   TLS/SSLを必須とする場合は、必ず最初に発行すること。
 2. [開発環境構築手順](/docs/setup-dev-environment.md)  
    開発環境が未構築の場合は、上記手順を参照し開発環境を構築すること。
+3. [アーキテクチャ補足事項](/docs/middleware.md)  
+   ミドルウェア含む、開発環境の説明資料。
 
-※ホスト側から作業を行うのではなく、必ずDev Containerのコンテナ上で作業を行うこと。
-
-#### 各種ミドルウェアのセットアップ方法
-開発環境用のミドルウェアのセットアップは、デフォルト値が設定済みである。Dev Containerからであれば、以下のコマンドですぐに動きを確認できる。
-
-```bash
-# 開発環境用のコンテナ群は以下のコマンドで起動する
-docker compose --profile development up -d
-```
-
-ただし、LDAPのDNを変更する、PostgreSQLのセキュア設定をする、など細かい設定を実施する場合は、下記のミドルウェア構築手順書を参考に設定を変更すること。
-
-1. [PostgreSQLセットアップ手順](/infra/postgres/README.md)
-2. [OpenLDAPセットアップ手順](/infra/openldap/README.md)
-3. [Webサーバセットアップ手順](/infra/nginx/README.md)
-4. [認証・認可サーバセットアップ手順](/infra/dex/README.md)
-5. [セッション管理サーバセットアップ手順](/infra/redis/README.md)
-6. [テスト用メールサーバのセットアップ手順](/infra/mailhog/README.md)
+### 注意事項
+ * ホスト側から作業を行うのではなく、必ずDev Containerのコンテナ上で作業を行うこと。
 
 ※ステージング環境や本番環境など、用途毎に設定が必要な場合はcompose.yamlを改修し使用すること。
 
