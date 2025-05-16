@@ -200,6 +200,16 @@ function copy_template_for_env() {
     if [[ ! -f .vscode/settings.json ]]; then
         cp -f .devcontainer/setup/2.settings-template.jsonc .vscode/settings.json
     fi
+
+    if [[ ! -f .vscode/markdown-preview.css ]]; then
+        cat <<-EOF > .vscode/markdown-preview.css
+			table {
+			  display: block;
+			  overflow-x: auto;
+			  white-space: nowrap;
+			}
+		EOF
+    fi
 }
 
 # Dockerイメージをpullする

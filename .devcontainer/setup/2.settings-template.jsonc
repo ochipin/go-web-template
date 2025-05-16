@@ -155,6 +155,8 @@
         // Markdown の場合は、末尾空白が必要な場合もあるのでOFFにする
         "files.trimTrailingWhitespace": false
     },
+    // Markdownプレビュースタイル
+    "markdown.styles": [".vscode/markdown-preview.css"],
 
     // -------------------------------------------------------------------------
     // Todo Tree の設定

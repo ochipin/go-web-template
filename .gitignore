@@ -37,7 +37,8 @@ Thumbs.db
 /tmp
 # 環境変数ファイルは除外する
 .env
-.vscode/settings.json
+/.vscode/settings.json
+/.vscode/*.css
 /.devcontainer/override.yaml
 /.devcontainer/devcontainer.json
 /.devcontainer/container.bashrc
