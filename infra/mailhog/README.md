@@ -9,19 +9,18 @@
 volumes:
   maildir:
 
+services:
   mailserver:
-    image: mailhog/mailhog
+    image: axllent/mailpit
     ports:
-      - 8025
-      - 1025
+      - 8025  # Web UI
+      - 1025  # SMTP
     profiles:
       - development
       - staging
-    environment:
-      MH_STORAGE: maildir
-      MH_MAILDIR_PATH: /tmp
     volumes:
-      - maildir:/tmp
+      - maildir:/data
+    command: ["--webroot", "/mail/", "--database", "/data/mailpit.db"]
 ```
 
 テスト用メールサーバの動作に必要な環境変数はない。
